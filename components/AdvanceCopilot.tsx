@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Skeleton } from "@/components/ui/skeleton"
 import ReactMarkdown from 'react-markdown'
-import { askTheCopilot } from '@/app/copilot'
+import { askCohereAI } from '@/app/copilot'
 
 type Message = {
   id: string
@@ -45,7 +45,7 @@ export default function Component() {
     setError(null)
 
     try {
-        const copilotResponse = await askTheCopilot(input, category)
+        const copilotResponse = await askCohereAI(input, category)
         const aiMessage: Message = {
         id: Date.now().toString(),
         content: copilotResponse,
