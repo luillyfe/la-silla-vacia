@@ -56,6 +56,7 @@ export default function Component() {
         setMessages(prev => [...prev, aiMessage])
         setIsThinking(false)
     } catch (err) {
+      console.error(err)
       setError('Failed to get AI response. Please try again.')
     } finally {
       setIsThinking(false)
