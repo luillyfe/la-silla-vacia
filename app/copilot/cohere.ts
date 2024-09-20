@@ -1,7 +1,9 @@
+"use server";
 import { CohereClient } from "cohere-ai";
 
 const token = process.env["COHERE_TOKEN"];
 
+console.log("token", token);
 const cohere = new CohereClient({
   token,
 });
