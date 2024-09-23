@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Skeleton } from "@/components/ui/skeleton"
 import ReactMarkdown from 'react-markdown'
-import { askCohereAI } from '@/app/copilot'
+import { askCohereAI, ChatMessage } from '@/app/copilot'
 
 type Message = {
   id: string
@@ -21,6 +21,7 @@ type Message = {
 const newsCategories = ['General', 'Politics', 'Economy', 'Society', 'International', 'Culture']
 
 export default function Component() {
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([])
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', content: "Bienvenido a La Silla AI. ¿Qué noticias te interesan hoy?", isUser: false, isSaved: false }
   ])
@@ -45,7 +46,7 @@ export default function Component() {
     setError(null)
 
     try {
-        const copilotResponse = await askCohereAI(input, category)
+        const copilotResponse = await askCohereAI(input, chatHistory, category)
         const aiMessage: Message = {
         id: Date.now().toString(),
         content: copilotResponse,
@@ -54,6 +55,7 @@ export default function Component() {
         category
         }
         setMessages(prev => [...prev, aiMessage])
+        setChatHistory(prev => [...prev, { role: "USER", message: input }, { role: "CHATBOT", message: copilotResponse }])
         setIsThinking(false)
     } catch (err) {
       console.error(err)

@@ -12,9 +12,7 @@ export type ChatMessage = {
   message: string;
 };
 
-let chatHistory: ChatMessage[] = [];
-
-export async function askTheCopilot(userPrompt: string, category?: string, ): Promise<string> {
+export async function askTheCopilot(userPrompt: string, chatHistory: ChatMessage[] = [], category?: string): Promise<string> {
   const stream = await cohere.chatStream({
     model: "command-r-plus",
     message: category 
@@ -32,10 +30,6 @@ export async function askTheCopilot(userPrompt: string, category?: string, ): Pr
           response += chat.text;
       }
   }
-
-  // Add the new messages to the chat history
-  chatHistory.push({ role: "USER", message: userPrompt });
-  chatHistory.push({ role: "CHATBOT", message: response });
 
   return response;
 }
