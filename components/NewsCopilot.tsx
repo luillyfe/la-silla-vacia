@@ -4,7 +4,7 @@ import { Send } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { askCohereAI } from '@/app/copilot'
+import { askCohereAI, ChatMessage } from '@/app/copilot'
 
 type Message = {
   content: string
@@ -12,6 +12,7 @@ type Message = {
 }
 
 export default function NewsCopilot() {
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([])
   const [messages, setMessages] = useState<Message[]>([
     { content: "Bienvenido a La Silla AI. ¿Qué noticias te interesan hoy?", isUser: false }
   ])
@@ -22,15 +23,19 @@ export default function NewsCopilot() {
     e.preventDefault()
     if (!input.trim()) return
 
+    // add the new messages to the conversation
     const userMessage = { content: input, isUser: true }
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setIsThinking(true)
 
     // ask the copilot
-    const copilotResponse = await askCohereAI(input)
+    const copilotResponse = await askCohereAI(input, chatHistory)
     setMessages(prev => [...prev, { content: copilotResponse, isUser: false }])
     setIsThinking(false)
+
+    // add the new messages to the chat history
+    setChatHistory(prev => [...prev, { role: "USER", message: input }, { role: "CHATBOT", message: copilotResponse }])
   }
 
   return (
